@@ -36,9 +36,9 @@ int main(){
 	}
 
 	lseek(fd, 0, SEEK_SET);
-                        while( read(fd, buf, sizeof(buf))!= 0 ){
-                                printf("%s\n", buf);
-                        }
+        while( read(fd, buf, sizeof(buf))!= 0 ){
+               printf("%s\n", buf);
+        }
 
 
 	close(fd);

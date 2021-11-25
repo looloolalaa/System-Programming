@@ -1,18 +1,40 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <sys/wait.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
 
-void do_it(){
-	fork();
-	fork();
-	printf("hello\n");
-	return;
+typedef struct {
+	int start;
+	int lines;
+} Arg;
+
+void* main_thread(void *data){
+	Arg arg = *((Arg *)data);
+	long count = arg.start+arg.lines;
+	return (void*)(count);
 }
 
 
 int main(){
-	do_it();
-	printf("hello\n");
-	exit(0);
+	pthread_t tid;
+	int result;
+
+	Arg arg;
+	arg.start = 1;
+	arg.lines = 4;
+	
+	int total = 0;
+	for(int i=0;i<3;i++){
+		arg.start= i+1;
+		arg.lines = 4;
+		int status = pthread_create(&tid, NULL, main_thread, (void*)&(arg));
+		status = pthread_join(tid, (void*)&result);
+		printf("%d\n", result);
+		total += result;
+	}
+	printf("total: %d\n", total);
+
+
+	return 0;
 }
